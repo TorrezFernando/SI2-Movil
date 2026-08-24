@@ -13,14 +13,23 @@ class TokenResponseModel {
   final String tokenType;
   final UserModel user;
 
-  factory TokenResponseModel.fromJson(Map<String, dynamic> json) =>
+  factory TokenResponseModel.fromJson(
+    Map<String, dynamic> json, {
+    String? fallbackEmail,
+  }) =>
       TokenResponseModel(
         accessToken: json['access_token'] as String? ?? '',
         refreshToken: json['refresh_token'] as String? ?? '',
         tokenType: json['token_type'] as String? ?? 'bearer',
-        user: UserModel.fromJson(
-          (json['user'] as Map?)?.cast<String, dynamic>() ?? {},
-        ),
+        user: json['user'] is Map
+            ? UserModel.fromJson((json['user'] as Map).cast<String, dynamic>())
+            : UserModel(
+                id: 0,
+                email: fallbackEmail ?? '',
+                fullName: fallbackEmail ?? 'Usuario autenticado',
+                isActive: true,
+                roles: const [],
+              ),
       );
 
   Map<String, dynamic> toJson() => {

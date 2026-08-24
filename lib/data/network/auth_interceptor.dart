@@ -24,7 +24,7 @@ class AuthInterceptor extends Interceptor {
   Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     final path = err.requestOptions.path;
     if (err.response?.statusCode == 401 &&
-      !path.contains('/auth/login') &&
+      !path.contains('/login') &&
       !path.contains('/auth/logout')) {
       await _onUnauthorized();
     }

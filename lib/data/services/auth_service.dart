@@ -9,11 +9,14 @@ class AuthService {
   final Dio _dio;
 
   Future<TokenResponseModel> login(String email, String password) async {
-    final response = await _dio.post('/auth/login', data: {
-      'email': email,
+    final response = await _dio.post('/login', data: {
+      'correo': email,
       'password': password,
     });
-    return TokenResponseModel.fromJson(response.data as Map<String, dynamic>);
+    return TokenResponseModel.fromJson(
+      response.data as Map<String, dynamic>,
+      fallbackEmail: email,
+    );
   }
 
   Future<UserModel> getMe() async {
