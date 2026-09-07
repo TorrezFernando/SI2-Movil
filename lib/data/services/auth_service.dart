@@ -9,7 +9,7 @@ class AuthService {
   final Dio _dio;
 
   Future<TokenResponseModel> login(String email, String password) async {
-    final response = await _dio.post('/login', data: {
+    final response = await _dio.post('/gestion_usuarios/auth/login', data: {
       'correo': email,
       'password': password,
     });

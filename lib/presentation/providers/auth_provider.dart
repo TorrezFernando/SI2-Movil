@@ -41,8 +41,12 @@ class AuthProvider extends ChangeNotifier {
       );
       _user = tokens.user;
       return true;
-    } on DioException catch (error) {
-      _errorMessage = _apiError(error, 'No se pudo iniciar sesión.');
+    } catch (error) {
+      if (error is DioException) {
+        _errorMessage = _apiError(error, 'No se pudo iniciar sesión.');
+      } else {
+        _errorMessage = 'Error local: $error';
+      }
       return false;
     } finally {
       _setLoading(false);

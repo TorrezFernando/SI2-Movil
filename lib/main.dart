@@ -7,8 +7,11 @@ import 'core/config/api_constants.dart';
 import 'data/network/auth_interceptor.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/services/auth_service.dart';
+import 'data/services/propiedades_service.dart';
+import 'data/repositories/propiedades_repository.dart';
 import 'data/services/secure_storage_service.dart';
 import 'presentation/providers/auth_provider.dart';
+import 'presentation/providers/propiedades_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,21 +23,31 @@ Future<void> main() async {
     receiveTimeout: const Duration(seconds: 15),
     headers: {'Content-Type': 'application/json'},
   ));
-  final service = AuthService(dio);
-  auth = AuthProvider(AuthRepository(service), storage);
+  final authService = AuthService(dio);
+  final propiedadesService = PropiedadesService(dio);
+  auth = AuthProvider(AuthRepository(authService), storage);
+  final propiedadesProvider = PropiedadesProvider(PropiedadesRepository(propiedadesService));
   dio.interceptors.add(AuthInterceptor(storage, auth.signOut));
   await auth.restoreSession();
-  runApp(InmobiliariaApp(auth: auth));
+  runApp(InmobiliariaApp(auth: auth, propiedadesProvider: propiedadesProvider));
 }
 
 class InmobiliariaApp extends StatelessWidget {
-  const InmobiliariaApp({required this.auth, super.key});
+  const InmobiliariaApp({
+    required this.auth,
+    required this.propiedadesProvider,
+    super.key,
+  });
 
   final AuthProvider auth;
+  final PropiedadesProvider propiedadesProvider;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider.value(
-        value: auth,
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: auth),
+          ChangeNotifierProvider.value(value: propiedadesProvider),
+        ],
         child: MaterialApp.router(
           title: 'Inmobiliaria',
           debugShowCheckedModeBanner: false,
