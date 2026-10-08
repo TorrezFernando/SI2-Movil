@@ -11,6 +11,8 @@ import '../presentation/screens/main_screen.dart';
 import '../presentation/screens/map_screen.dart';
 import '../presentation/screens/propiedad_detalle_screen.dart';
 import '../presentation/screens/agendar_visita_screen.dart';
+import '../presentation/screens/pago_screen.dart';
+import '../presentation/screens/comprobante_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorCatKey = GlobalKey<NavigatorState>(debugLabel: 'catalogo');
@@ -39,6 +41,22 @@ GoRouter createRouter(AuthProvider auth) => GoRouter(
         GoRoute(
           path: '/forgot-password',
           builder: (_, _) => const ForgotPasswordScreen(),
+        ),
+        GoRoute(
+          path: '/pago',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final prop = state.extra as PropiedadModel;
+            return PagoScreen(propiedad: prop);
+          },
+        ),
+        GoRoute(
+          path: '/comprobante',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final prop = state.extra as PropiedadModel;
+            return ComprobanteScreen(propiedad: prop);
+          },
         ),
         GoRoute(
           path: '/propiedad-detalle',

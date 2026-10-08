@@ -105,21 +105,44 @@ class PropiedadDetalleScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: FilledButton.icon(
-            onPressed: () {
-              context.push('/agendar-visita', extra: propiedad);
-            },
-            icon: const Icon(Icons.calendar_month),
-            label: const Text(
-              'Agendar Visita',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    context.push('/agendar-visita', extra: propiedad);
+                  },
+                  icon: const Icon(Icons.calendar_month),
+                  label: const Text('Visita'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: FilledButton.icon(
+                  onPressed: () {
+                    context.push('/pago', extra: propiedad);
+                  },
+                  icon: const Icon(Icons.shopping_cart_checkout),
+                  label: Text(
+                    propiedad.tipoOperacion.toLowerCase() == 'venta' ? 'Comprar' : 'Alquilar / Reservar',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
