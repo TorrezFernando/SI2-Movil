@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../core/config/api_constants.dart';
 import '../../data/models/propiedad_model.dart';
+
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
 
 class PropiedadDetalleScreen extends StatelessWidget {
   final PropiedadModel propiedad;
@@ -42,7 +47,10 @@ class PropiedadDetalleScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
@@ -68,17 +76,25 @@ class PropiedadDetalleScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     propiedad.titulo,
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.location_on, color: Colors.grey[600], size: 20),
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.grey[600],
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           propiedad.direccion,
-                          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ),
                     ],
@@ -88,14 +104,27 @@ class PropiedadDetalleScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Acerca de esta propiedad',
-                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     'Esta es una descripción generada para la propiedad. Aquí se mostrarían los detalles de las habitaciones, baños, tamaño del terreno y demás características especiales que hacen que esta propiedad sea única.',
-                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.5, color: Colors.grey[700]),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      height: 1.5,
+                      color: Colors.grey[700],
+                    ),
                   ),
                   const SizedBox(height: 32),
+                  if (context.watch<AuthProvider>().user?.idTenant ==
+                      propiedad.idTenant)
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          context.push('/tasacion', extra: propiedad),
+                      icon: const Icon(Icons.auto_awesome),
+                      label: const Text('Estimar valor con IA'),
+                    ),
                 ],
               ),
             ),
@@ -127,12 +156,15 @@ class PropiedadDetalleScreen extends StatelessWidget {
                 flex: 2,
                 child: FilledButton.icon(
                   onPressed: () {
-                    context.push('/pago', extra: propiedad);
+                    context.go('/cuenta');
                   },
                   icon: const Icon(Icons.shopping_cart_checkout),
                   label: Text(
-                    propiedad.tipoOperacion.toLowerCase() == 'venta' ? 'Comprar' : 'Alquilar / Reservar',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    'Mis contratos',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

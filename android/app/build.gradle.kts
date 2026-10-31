@@ -4,6 +4,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Permite compilar sin Firebase hasta que el equipo configure su proyecto.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "com.inmobiliaria.inmobiliaria_mobile"
     compileSdk = flutter.compileSdkVersion

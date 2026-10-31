@@ -21,11 +21,15 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final path = err.requestOptions.path;
     if (err.response?.statusCode == 401 &&
-      !path.contains('/login') &&
-      !path.contains('/auth/logout')) {
+        err.requestOptions.extra['skipUnauthorizedLogout'] != true &&
+        !path.contains('/login') &&
+        !path.contains('/auth/logout')) {
       await _onUnauthorized();
     }
     handler.next(err);

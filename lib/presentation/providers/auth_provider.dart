@@ -13,6 +13,8 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _user;
   bool _isLoading = false;
   String? _errorMessage;
+  Future<void> Function()? beforeSignOut;
+  bool _signingOut = false;
 
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
@@ -39,9 +41,11 @@ class AuthProvider extends ChangeNotifier {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       );
-      _user = tokens.user;
+      _user = await _repository.getMe();
       return true;
     } catch (error) {
+      await _storage.clear();
+      _user = null;
       if (error is DioException) {
         _errorMessage = _apiError(error, 'No se pudo iniciar sesión.');
       } else {
@@ -78,20 +82,26 @@ class AuthProvider extends ChangeNotifier {
       } else {
         _errorMessage = 'Error local: $error';
       }
-      _setLoading(false); // set false si falla (signIn ya lo hace si es exitoso)
+      _setLoading(
+        false,
+      ); // set false si falla (signIn ya lo hace si es exitoso)
       return false;
     }
   }
 
   Future<void> signOut({bool notify = true}) async {
-    final refreshToken = await _storage.readRefreshToken();
+    if (_signingOut) return;
+    _signingOut = true;
     try {
+      final refreshToken = await _storage.readRefreshToken();
+      await beforeSignOut?.call();
       if (refreshToken != null) await _repository.logout(refreshToken);
     } catch (_) {
       // Local cleanup must happen even when the backend is unavailable.
     } finally {
       await _storage.clear();
       _user = null;
+      _signingOut = false;
       if (notify) notifyListeners();
     }
   }

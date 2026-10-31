@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Configuración local del proyecto Firebase
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist

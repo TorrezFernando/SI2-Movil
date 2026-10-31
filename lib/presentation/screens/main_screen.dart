@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({
-    required this.navigationShell,
-    super.key,
-  });
+  const MainScreen({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
 
@@ -31,6 +28,11 @@ class MainScreen extends StatelessWidget {
             icon: Icon(Icons.map_outlined),
             selectedIcon: Icon(Icons.map_rounded),
             label: 'Mapa',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.receipt_long_outlined),
+            selectedIcon: Icon(Icons.receipt_long),
+            label: 'Mi cuenta',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
